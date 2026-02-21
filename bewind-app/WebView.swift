@@ -39,11 +39,31 @@ struct WebView: UIViewRepresentable {
             self.cookieJar = cookieJar
         }
 
-        /// After each successful navigation, harvest cookies and store them in the shared CookieJar
+        /// After each successful navigation, inject CSS to hide unnecessary portal UI elements
+        /// (e.g. banners and cookie notices), then harvest cookies into the shared CookieJar
         /// so the Dashboard can reuse the authenticated session.
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            injectCleanupCSS(into: webView)
             webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
                 self.cookieJar.update(cookies: cookies)
+            }
+        }
+
+        // MARK: - CSS injection
+
+        private func injectCleanupCSS(into webView: WKWebView) {
+            let css = "header, .banner, #cookie-notice, .cookie-bar { display: none !important; }"
+            let js = """
+            (function() {
+                var style = document.createElement('style');
+                style.textContent = '\(css)';
+                document.head.appendChild(style);
+            })();
+            """
+            webView.evaluateJavaScript(js) { _, error in
+                if let error {
+                    print("[WebView] CSS injection error: \(error.localizedDescription)")
+                }
             }
         }
     }

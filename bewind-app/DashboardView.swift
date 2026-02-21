@@ -1,7 +1,6 @@
 import SwiftUI
 
-// MARK: - Mock Data Models
-// TODO: Replace with real models populated by SwiftSoup parsing of the Smart FMS portal HTML.
+// MARK: - Data Models
 
 struct Account: Identifiable {
     let id = UUID()
@@ -20,41 +19,52 @@ struct Reservation: Identifiable {
 // MARK: - DashboardView
 
 struct DashboardView: View {
-    /// Shared cookie jar injected from ContentView – use to make authenticated requests.
+    /// Shared cookie jar injected from ContentView – used to make authenticated requests.
     @EnvironmentObject private var cookieJar: CookieJar
 
-    // Mock accounts – replace with data fetched and parsed from the portal
-    @State private var accounts: [Account] = [
-        Account(name: "Betaalrekening", balance: 12_345.67, currency: "EUR"),
-        Account(name: "Spaarrekening",  balance:  5_000.00, currency: "EUR"),
-    ]
-
-    // Mock reservations – replace with data fetched and parsed from the portal
-    @State private var reservations: [Reservation] = [
-        Reservation(description: "Belastingdienst",  amount: 2_500.00, date: Date()),
-        Reservation(description: "KvK Jaarrekening", amount:    75.00, date: Date()),
-    ]
+    /// ViewModel that owns the accounts / reservations state and the refresh logic.
+    @StateObject private var viewModel = DashboardVM()
 
     var body: some View {
         NavigationView {
             List {
                 // MARK: Accounts section
                 Section(header: Text("Rekeningen")) {
-                    ForEach(accounts) { account in
+                    ForEach(viewModel.accounts) { account in
                         AccountRow(account: account)
                     }
                 }
 
                 // MARK: Reservations section
                 Section(header: Text("Reserveringen")) {
-                    ForEach(reservations) { reservation in
+                    ForEach(viewModel.reservations) { reservation in
                         ReservationRow(reservation: reservation)
+                    }
+                }
+
+                // MARK: Error section
+                if let error = viewModel.errorMessage {
+                    Section {
+                        Text(error)
+                            .foregroundColor(.red)
+                            .font(.caption)
                     }
                 }
             }
             .navigationTitle("Dashboard")
-            // TODO: Add a refresh action that fetches portal HTML via CookieJar,
-            //       parses it with SwiftSoup, and updates `accounts` and `reservations`.
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    if viewModel.isLoading {
+                        ProgressView()
+                    } else {
+                        Button {
+                            viewModel.refresh(using: cookieJar)
+                        } label: {
+                            Image(systemName: "arrow.clockwise")
+                        }
+                    }
+                }
+            }
         }
     }
 }

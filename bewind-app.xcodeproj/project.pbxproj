@@ -13,6 +13,8 @@
 		A00000000000000000000053 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000043 /* DashboardView.swift */; };
 		A00000000000000000000054 /* CookieJar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000044 /* CookieJar.swift */; };
 		A00000000000000000000055 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000045 /* Assets.xcassets */; };
+		A00000000000000000000056 /* FMSParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000047 /* FMSParser.swift */; };
+		A00000000000000000000057 /* DashboardVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000048 /* DashboardVM.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,9 @@
 		A00000000000000000000045 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A00000000000000000000047 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A00000000000000000000046 /* bewind-app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "bewind-app.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A00000000000000000000047 /* FMSParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FMSParser.swift; sourceTree = "<group>"; };
+		A00000000000000000000048 /* DashboardVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardVM.swift; sourceTree = "<group>"; };
+		A00000000000000000000049 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +58,9 @@
 				A00000000000000000000042 /* WebView.swift */,
 				A00000000000000000000043 /* DashboardView.swift */,
 				A00000000000000000000044 /* CookieJar.swift */,
+				A00000000000000000000047 /* FMSParser.swift */,
+				A00000000000000000000048 /* DashboardVM.swift */,
+				A00000000000000000000049 /* Info.plist */,
 				A00000000000000000000045 /* Assets.xcassets */,
 				A00000000000000000000047 /* Info.plist */,
 			);
@@ -141,6 +149,8 @@
 				A00000000000000000000052 /* WebView.swift in Sources */,
 				A00000000000000000000053 /* DashboardView.swift in Sources */,
 				A00000000000000000000054 /* CookieJar.swift in Sources */,
+				A00000000000000000000056 /* FMSParser.swift in Sources */,
+				A00000000000000000000057 /* DashboardVM.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
