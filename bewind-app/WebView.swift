@@ -1,0 +1,65 @@
+import SwiftUI
+import WebKit
+
+// MARK: - WebView
+
+/// A SwiftUI wrapper around `WKWebView` for loading the Smart FMS portal.
+/// Uses the default (shared) data store so cookies are persisted across sessions.
+struct WebView: UIViewRepresentable {
+    let url: URL
+    let cookieJar: CookieJar
+
+    func makeUIView(context: Context) -> WKWebView {
+        // Use the default data store so the cookie store is shared with URLSession.shared
+        let configuration = WKWebViewConfiguration()
+        configuration.websiteDataStore = .default()
+
+        let webView = WKWebView(frame: .zero, configuration: configuration)
+        webView.navigationDelegate = context.coordinator
+
+        // Load the portal URL on first creation
+        webView.load(URLRequest(url: url))
+        return webView
+    }
+
+    func updateUIView(_ webView: WKWebView, context: Context) {
+        // No incremental updates needed; the WebView manages its own navigation
+    }
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(cookieJar: cookieJar)
+    }
+
+    // MARK: Coordinator
+
+    class Coordinator: NSObject, WKNavigationDelegate {
+        let cookieJar: CookieJar
+
+        init(cookieJar: CookieJar) {
+            self.cookieJar = cookieJar
+        }
+
+        /// After each successful navigation, harvest cookies and store them in the shared CookieJar
+        /// so the Dashboard can reuse the authenticated session.
+        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+            webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { cookies in
+                self.cookieJar.update(cookies: cookies)
+            }
+        }
+    }
+}
+
+// MARK: - WebViewTab
+
+/// The tab that wraps the WebView and receives the shared `CookieJar` from the environment.
+struct WebViewTab: View {
+    @EnvironmentObject private var cookieJar: CookieJar
+
+    /// Starting URL for the Smart FMS portal – financial accounts overview.
+    private let portalURL = URL(string: "https://mijnsmartfms.nl/default.asp?p=FINANB_REKENINGEN")!
+
+    var body: some View {
+        WebView(url: portalURL, cookieJar: cookieJar)
+            .ignoresSafeArea(edges: .bottom)
+    }
+}
